@@ -17,13 +17,4 @@ export class ActividadController {
     return this.actividadService.findAllByProject(projectId);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateActividadDto: UpdateActividadDto) {
-    return this.actividadService.update(id, updateActividadDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.actividadService.remove(id);
-  }
 }

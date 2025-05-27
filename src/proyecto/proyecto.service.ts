@@ -30,18 +30,6 @@ export class ProyectoService {
     return this.proyectoModel.findById(id).exec();
   }
 
-  async update(id: string, updateProyectoDto: UpdateProyectoDto): Promise<Proyecto | null> {
-    if (updateProyectoDto.progress !== undefined) {
-      delete updateProyectoDto.progress;
-    }
-    
-    return this.proyectoModel.findByIdAndUpdate(id, updateProyectoDto, { new: true }).exec();
-  }
-
-  async remove(id: string): Promise<Proyecto | null> {
-    await this.actividadModel.deleteMany({ projectId: id }).exec();
-    return this.proyectoModel.findByIdAndDelete(id).exec();
-  }
 
   async calculateProgress(projectId: string): Promise<number> {
     const actividades = await this.actividadModel.find({ projectId }).exec();

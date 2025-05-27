@@ -22,13 +22,4 @@ export class ProyectoController {
     return this.proyectoService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateProyectoDto: UpdateProyectoDto) {
-    return this.proyectoService.update(id, updateProyectoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.proyectoService.remove(id);
-  }
 }

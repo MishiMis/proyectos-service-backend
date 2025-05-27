@@ -1,21 +1,21 @@
-import { 
-  Controller, 
-  Post, 
-  Body, 
-  Get, 
-  Param, 
-  Patch, 
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Patch,
   Query,
   HttpStatus,
   HttpCode,
-  NotFoundException 
+  NotFoundException
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -33,22 +33,21 @@ export class UsersController {
     if (isActive !== undefined) {
       filters.isActive = isActive;
     }
-    
+
     return this.usersService.findAll(page, limit, filters);
   }
   @Get('firstnames')
   async getAllFirstNames(): Promise<string[]> {
     return this.usersService.getAllFirstNames();
   }
-  @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.usersService.findById(id);
+  @Get('last-registered')
+  async getLastRegistered() {
+    const user = await this.usersService.getLastRegisteredUser();
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('No users found');
     }
     return user;
   }
-
 
   @Patch(':id/toggle-status')
   async toggleStatus(@Param('id') id: string) {
