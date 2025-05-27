@@ -6,7 +6,7 @@ import { User } from './schemas/user.schema';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<User>) { }
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
 
   async create(userData: Partial<User>): Promise<User> {
     const { username, password } = userData;
@@ -16,7 +16,7 @@ export class UsersService {
       throw new ConflictException('Email already in use');
     }
 
-    const hashedPassword = await bcrypt.hash(password!, 10);
+    const hashedPassword = await bcrypt.hash(password!, 10); 
 
     const user = new this.userModel({
       ...userData,
@@ -33,38 +33,48 @@ export class UsersService {
     filters: Record<string, any> = {}
   ): Promise<{ users: User[]; total: number }> {
     const skip = (page - 1) * limit;
-
+    
     const query = this.userModel.find(filters);
-
+    
     const users = await query
       .skip(skip)
       .limit(limit)
       .exec();
-
+    
     const total = await this.userModel.countDocuments(filters).exec();
-
+    
     return { users, total };
   }
-  async getLastRegisteredUser(): Promise<User | null> {
-    return this.userModel
-      .findOne()
-      .sort({ createdAt: -1 })
-      .exec();
+    async getLastRegisteredUser(): Promise<User | null> {
+  return this.userModel
+    .findOne()
+    .sort({ createdAt: -1 })
+    .exec();
+}
+
+
+  async findById(id: string): Promise<User | null> {
+    return this.userModel.findById(id).exec();
   }
+
   async findByUsername(username: string): Promise<User | null> {
     return this.userModel.findOne({ username }).exec();
   }
+
   async toggleUserStatus(id: string): Promise<User> {
     const user = await this.userModel.findById(id).exec();
     if (!user) {
       throw new NotFoundException('User not found');
     }
+
     user.isActive = !user.isActive;
     return user.save();
   }
   async getAllFirstNames(): Promise<string[]> {
-    return this.userModel.distinct('personalData.firstName').exec();
-  }
+  return this.userModel.distinct('personalData.firstName').exec();
+}
+
+
   async validateUser(username: string, password: string): Promise<User | null> {
     const user = await this.findByUsername(username);
     if (!user || !user.isActive) {
